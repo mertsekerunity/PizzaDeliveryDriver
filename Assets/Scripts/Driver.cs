@@ -14,6 +14,9 @@ public class Driver : MonoBehaviour
     [SerializeField] float slowSpeed = 1f;
     [SerializeField] float boostSpeed = 3f;
 
+    private float defaultMoveSpeed;
+    [SerializeField] float delay = 5f;
+
 
     private SpriteRenderer spriteRenderer;
 
@@ -23,11 +26,17 @@ public class Driver : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        defaultMoveSpeed = moveSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // clamp position within defined boundaries
+        float clampedX = Mathf.Clamp(transform.position.x, -30, 90);
+        float clampedY = Mathf.Clamp(transform.position.y, -50, 10);
+        transform.position = new Vector3(clampedX, clampedY, transform.position.z);
+
         float steerAmount = Input.GetAxis("Horizontal") * turnSpeed * Time.deltaTime; //-1 to 1
 
         transform.Rotate(0, 0, -steerAmount);
@@ -43,6 +52,7 @@ public class Driver : MonoBehaviour
         {
             moveSpeed = slowSpeed;
             Debug.Log("Hit the obstacle");
+            StartCoroutine(ResetSpeedAfterDelay(delay));
         }
     }
 
@@ -69,7 +79,15 @@ public class Driver : MonoBehaviour
             Debug.Log("Speed boost collected!");
             moveSpeed = boostSpeed;
             Destroy(collider.gameObject, destroyDelay);
+            StartCoroutine(ResetSpeedAfterDelay(delay));
         }
 
+    }
+
+    IEnumerator ResetSpeedAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        moveSpeed = defaultMoveSpeed;
+        Debug.Log("Speed reset to default!");
     }
 }

@@ -7,8 +7,10 @@ public class ObstacleSpawner : MonoBehaviour
     [SerializeField] GameObject obstaclePrefab;
     [SerializeField] float spawnRate = 1.0f;
     [SerializeField] float spawnInterval = 1.0f;
-    [SerializeField] float xPos;
-    [SerializeField] float yPos;
+    [SerializeField] float xPosLim;
+    [SerializeField] float xNegLim;
+    [SerializeField] float yPosLim;
+    [SerializeField] float yNegLim;
 
     // Start is called before the first frame update
     void Start()
@@ -18,8 +20,8 @@ public class ObstacleSpawner : MonoBehaviour
 
     void SpawnObstacle()
     {
-        float randomX = Random.Range(-xPos, xPos);
-        float randomY = Random.Range(-yPos, yPos);
+        float randomX = Random.Range(xNegLim, xPosLim);
+        float randomY = Random.Range(yNegLim, yPosLim);
         Vector2 randomPos = new Vector2(randomX, randomY);
         Instantiate(obstaclePrefab, randomPos, Quaternion.identity);
     }
